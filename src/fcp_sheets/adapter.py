@@ -211,8 +211,10 @@ class SheetsAdapter:
     def _flush_data_block(self, model: SheetsModel, log: EventLog) -> OpResult:
         """Process accumulated data block lines and write cells.
 
-        Stub implementation for Wave 1 — basic CSV parsing.
-        Full C1/C2 implementation in Wave 2.
+        Implements:
+        - C1: Robust type inference (formulas, quoted text, leading zeros, numbers)
+        - C2: Markdown table auto-detection and conversion
+        - C9: Collision detection (warns when overwriting non-empty cells)
         """
         import csv
         from io import StringIO
@@ -247,38 +249,71 @@ class SheetsAdapter:
         # Detect markdown table format (C2)
         is_markdown = False
         warning = ""
-        if buffer and buffer[0].strip().startswith("|"):
+        # Check first non-empty line for markdown pipe syntax
+        first_content = ""
+        for line in buffer:
+            stripped = line.strip()
+            if stripped:
+                first_content = stripped
+                break
+        if first_content.startswith("|"):
             is_markdown = True
             warning = "\n! Warning: Markdown table detected, auto-converted to CSV"
 
-        rows_written = 0
-        for i, line in enumerate(buffer):
+        # Parse all rows first, then check collisions (C9), then write
+        parsed_rows: list[list[str | int | float]] = []
+        for line in buffer:
             line = line.strip()
             if not line:
                 continue
 
             if is_markdown:
-                # Skip separator lines
+                # Skip separator lines like |---|---|---|
                 if all(c in "|-: " for c in line):
                     continue
-                # Strip pipes and split
+                # Strip leading/trailing pipes and split on internal pipes
                 cells = [c.strip() for c in line.strip("|").split("|")]
             else:
                 # Parse as CSV
                 reader = csv.reader(StringIO(line))
                 cells = next(reader, [])
 
-            row = start_row + rows_written
-            for j, val_str in enumerate(cells):
+            parsed_rows.append([self._parse_data_value(v.strip()) for v in cells])
+
+        if not parsed_rows:
+            return OpResult(success=False, message="No data rows parsed")
+
+        # C9: Collision detection — check for existing non-empty cells
+        collisions: list[str] = []
+        from fcp_sheets.model.refs import index_to_col
+        for i, row_data in enumerate(parsed_rows):
+            row = start_row + i
+            for j, _val in enumerate(row_data):
                 col = start_col + j
-                value = self._parse_data_value(val_str.strip())
+                existing = ws.cell(row=row, column=col).value
+                if existing is not None:
+                    addr = f"{index_to_col(col)}{row}"
+                    collisions.append(addr)
+
+        collision_warning = ""
+        if collisions:
+            count = len(collisions)
+            preview = ", ".join(collisions[:5])
+            if count > 5:
+                preview += f" (+{count - 5} more)"
+            collision_warning = f"\n! Warning: Overwrote {count} non-empty cell(s): {preview}"
+
+        # Write parsed data to worksheet
+        max_cols = 0
+        for i, row_data in enumerate(parsed_rows):
+            row = start_row + i
+            for j, value in enumerate(row_data):
+                col = start_col + j
                 ws.cell(row=row, column=col, value=value)
                 self.index.expand_bounds(ws.title, row, col)
+            max_cols = max(max_cols, len(row_data))
 
-            rows_written += 1
-
-        if rows_written == 0:
-            return OpResult(success=False, message="No data rows parsed")
+        rows_written = len(parsed_rows)
 
         # Log snapshot
         after = model.snapshot()
@@ -288,11 +323,10 @@ class SheetsAdapter:
         ))
         _trim_events(log, MAX_EVENTS)
 
-        from fcp_sheets.model.refs import index_to_col
-        end_addr = f"{index_to_col(start_col)}{start_row}..{index_to_col(start_col + len(cells) - 1)}{start_row + rows_written - 1}"
+        end_addr = f"{index_to_col(start_col)}{start_row}..{index_to_col(start_col + max_cols - 1)}{start_row + rows_written - 1}"
         self.index.record_modified(ws.title, end_addr)
 
-        msg = f"Wrote {rows_written} rows at {anchor_str}{warning}"
+        msg = f"Wrote {rows_written} rows at {anchor_str}{warning}{collision_warning}"
         return OpResult(success=True, message=msg, prefix="+")
 
     @staticmethod
