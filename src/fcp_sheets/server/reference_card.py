@@ -4,6 +4,20 @@ from __future__ import annotations
 
 EXTRA_SECTIONS: dict[str, str] = {
     "Cell References": "A1 single | A1:D10 range | B:B column | 3:3 row | Sheet2!A1 cross-sheet\n  @bottom_left @bottom_right @right_top (spatial anchors, +N offset)",
+    "Data Blocks (PREFERRED for multi-cell input)": (
+        "CSV:  data A1\n"
+        "        Name,Age,City\n"
+        "        Alice,30,NYC\n"
+        "        Bob,25,LA\n"
+        "      data end\n"
+        "  Markdown:  data A1\n"
+        "               | Name | Age | City |\n"
+        "               |------|-----|----- |\n"
+        "               | Alice | 30 | NYC |\n"
+        "             data end\n"
+        "  Formulas: =SUM(A1:A10), =B2*0.22, =C3/C$8 all work inside data blocks\n"
+        "  Types: bare numbers → numeric, =expr → formula, \"quoted\" → text, 007 → text"
+    ),
     "Number Formats": (
         "General | 0 | 0.00 | #,##0 | $#,##0 | $#,##0.00\n"
         "  0% | 0.00% | yyyy-mm-dd | mm/dd/yyyy | hh:mm:ss | @"
@@ -27,20 +41,6 @@ EXTRA_SECTIONS: dict[str, str] = {
     "Border Styles": "thin | medium | thick | dashed | dotted | double | hair\n  Sides: all | outline | top | bottom | left | right | inner | h | v",
     "Cond-Fmt Operators": "gt | lt | gte | lte | eq | neq | between | not-between",
     "Table Styles": "TableStyleLight1-21 | TableStyleMedium1-28 | TableStyleDark1-11",
-    "Data Block Formats": (
-        "CSV:  data A1\\n"
-        "        Name,Age,City\\n"
-        "        Alice,30,NYC\\n"
-        "        Bob,25,LA\\n"
-        "      data end\\n"
-        "  Markdown:  data A1\\n"
-        "               | Name | Age | City |\\n"
-        "               |------|-----|------|\\n"
-        "               | Alice | 30 | NYC |\\n"
-        "             data end\\n"
-        "  Formulas: =SUM(A1:A10), =B2*0.22, =C3/C$8 all work inside data blocks\\n"
-        "  Types: bare numbers → numeric, =expr → formula, \"quoted\" → text, 007 → text"
-    ),
     "Response Prefixes": (
         "+  cell/data created    ~  chart/table created\n"
         "  *  style/format modified  -  cell/range removed\n"
