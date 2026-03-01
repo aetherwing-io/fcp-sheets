@@ -110,14 +110,15 @@ class SheetsAdapter:
     def get_digest(self, model: SheetsModel) -> str:
         """Return a compact state fingerprint."""
         wb = model.wb
-        sheets = len(wb.sheetnames)
+        active = self.index.active_sheet
+        sheet_names = wb.sheetnames
         cells = 0
         for ws in wb.worksheets:
             bounds = self.index.get_bounds(ws.title)
             if bounds:
                 min_r, min_c, max_r, max_c = bounds
                 cells += (max_r - min_r + 1) * (max_c - min_c + 1)
-        return f"{sheets} sheets, ~{cells} cells"
+        return f"Active: '{active}', Sheets: {sheet_names}, ~{cells} cells"
 
     def dispatch_op(
         self, op: ParsedOp, model: SheetsModel, log: EventLog

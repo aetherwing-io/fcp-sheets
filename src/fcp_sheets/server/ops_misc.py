@@ -49,6 +49,16 @@ def op_name(op: ParsedOp, ctx: SheetsOpContext) -> OpResult:
             if scope_sheet not in ctx.wb.sheetnames:
                 return OpResult(success=False, message=f"Sheet '{scope_sheet}' not found")
             attr_text = f"'{scope_sheet}'!{range_str}"
+        elif "!" in range_str:
+            # Cross-sheet reference — already includes sheet name
+            sheet_part, _, cell_part = range_str.partition("!")
+            sheet_part = sheet_part.strip("'\"")
+            if sheet_part not in ctx.wb.sheetnames:
+                return OpResult(
+                    success=False,
+                    message=f"Sheet '{sheet_part}' not found in range '{range_str}'",
+                )
+            attr_text = f"'{sheet_part}'!{cell_part}"
         else:
             # Use active sheet
             sheet_name = ctx.active_sheet.title

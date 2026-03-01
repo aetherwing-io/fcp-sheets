@@ -180,7 +180,13 @@ def op_width(op: ParsedOp, ctx: SheetsOpContext) -> OpResult:
     e.g. width A 12, width A:E 14, width A auto
     """
     if len(op.positionals) < 2:
-        return OpResult(success=False, message="Usage: width COL|RANGE SIZE|auto")
+        hint = ""
+        if op.params:
+            hint = (
+                f" (got params {dict(op.params)}"
+                " — column range may have been parsed as key:value)"
+            )
+        return OpResult(success=False, message=f"Usage: width COL|RANGE SIZE|auto{hint}")
 
     col_spec = op.positionals[0]
     size_str = op.positionals[1]

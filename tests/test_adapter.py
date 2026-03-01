@@ -333,4 +333,5 @@ class TestGetDigest:
     def test_digest(self, adapter: SheetsAdapter):
         model = adapter.create_empty("Digest", {})
         digest = adapter.get_digest(model)
-        assert "1 sheets" in digest
+        assert "Sheet1" in digest
+        assert "Sheets:" in digest
