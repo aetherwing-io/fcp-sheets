@@ -1,0 +1,11 @@
+{
+  "name": "fcp-sheets",
+  "description": "Semantic spreadsheet operations for LLMs",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": {
+    "name": "Scott Meyer"
+  },
+  "repository": "https://github.com/aetherwing-io/fcp-sheets",
+  "keywords": ["spreadsheet", "excel", "xlsx", "mcp"]
+}
