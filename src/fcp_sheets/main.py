@@ -107,9 +107,9 @@ def create_sheets_server() -> FastMCP:
         return TextContent(type="text", text=session.dispatch(action))
 
     @mcp.tool(name="sheets_help")
-    def get_help() -> TextContent:
+    def get_help() -> str:
         """Returns the sheets FCP reference card."""
-        return TextContent(type="text", text=reference_card)
+        return reference_card
 
     return mcp
 
