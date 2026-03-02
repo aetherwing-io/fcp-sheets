@@ -578,3 +578,36 @@ class TestPageSetup:
         assert result.success
         assert ctx.active_sheet.oddHeader.center.text == "My Report"
         assert ctx.active_sheet.oddFooter.center.text == "Page &P"
+
+    def test_print_title_rows(self, ctx: SheetsOpContext):
+        op = ParsedOp(
+            verb="page-setup", positionals=[],
+            params={"print-title-rows": "1:2"},
+            raw="page-setup print-title-rows:1:2",
+        )
+        result = op_page_setup(op, ctx)
+        assert result.success
+        assert ctx.active_sheet.print_title_rows == "$1:$2"
+        assert "print-title-rows" in result.message
+
+    def test_print_title_cols(self, ctx: SheetsOpContext):
+        op = ParsedOp(
+            verb="page-setup", positionals=[],
+            params={"print-title-cols": "A:B"},
+            raw="page-setup print-title-cols:A:B",
+        )
+        result = op_page_setup(op, ctx)
+        assert result.success
+        assert ctx.active_sheet.print_title_cols == "$A:$B"
+        assert "print-title-cols" in result.message
+
+    def test_print_title_rows_and_cols(self, ctx: SheetsOpContext):
+        op = ParsedOp(
+            verb="page-setup", positionals=[],
+            params={"print-title-rows": "1:1", "print-title-cols": "A:A"},
+            raw="page-setup print-title-rows:1:1 print-title-cols:A:A",
+        )
+        result = op_page_setup(op, ctx)
+        assert result.success
+        assert ctx.active_sheet.print_title_rows == "$1:$1"
+        assert ctx.active_sheet.print_title_cols == "$A:$A"

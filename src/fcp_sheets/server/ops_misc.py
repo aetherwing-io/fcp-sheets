@@ -359,6 +359,7 @@ def op_page_setup(op: ParsedOp, ctx: SheetsOpContext) -> OpResult:
 
     Syntax: page-setup [orient:landscape|portrait] [paper:letter|a4|legal]
             [margins:T,R,B,L] [header:TEXT] [footer:TEXT] [print-area:RANGE]
+            [print-title-rows:ROW_RANGE] [print-title-cols:COL_RANGE]
             [fit-width:N] [fit-height:N] [gridlines] [center-h] [center-v]
     """
     ws = ctx.active_sheet
@@ -416,6 +417,17 @@ def op_page_setup(op: ParsedOp, ctx: SheetsOpContext) -> OpResult:
     if print_area:
         ws.print_area = print_area
         changes.append(f"print-area={print_area}")
+
+    # Print title rows/cols (repeat at top/left of each printed page)
+    title_rows = op.params.get("print-title-rows")
+    if title_rows:
+        ws.print_title_rows = title_rows
+        changes.append(f"print-title-rows={ws.print_title_rows}")
+
+    title_cols = op.params.get("print-title-cols")
+    if title_cols:
+        ws.print_title_cols = title_cols
+        changes.append(f"print-title-cols={ws.print_title_cols}")
 
     # Fit to width/height
     fit_width = op.params.get("fit-width")

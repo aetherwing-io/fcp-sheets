@@ -312,9 +312,9 @@ VERBS: list[VerbSpec] = [
     ),
     VerbSpec(
         verb="page-setup",
-        syntax="page-setup [orient:landscape|portrait] [paper:letter|a4|legal] [margins:T,R,B,L] [header:TEXT] [footer:TEXT] [print-area:RANGE] [fit-width:N] [fit-height:N] [gridlines] [center-h] [center-v]",
+        syntax="page-setup [orient:landscape|portrait] [paper:letter|a4|legal] [margins:T,R,B,L] [header:TEXT] [footer:TEXT] [print-area:RANGE] [print-title-rows:ROW_RANGE] [print-title-cols:COL_RANGE] [fit-width:N] [fit-height:N] [gridlines] [center-h] [center-v]",
         category="misc",
-        params=["orient", "paper", "margins", "header", "footer", "print-area", "fit-width", "fit-height"],
+        params=["orient", "paper", "margins", "header", "footer", "print-area", "print-title-rows", "print-title-cols", "fit-width", "fit-height"],
         description="Configure page setup for printing.",
     ),
 ]

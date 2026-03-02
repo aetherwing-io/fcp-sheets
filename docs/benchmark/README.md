@@ -4,7 +4,7 @@ A 3-phase, 84-check benchmark comparing **fcp-sheets** (verb DSL via MCP) agains
 
 | Metric | FCP | Raw | Delta |
 |---|---|---|---|
-| **Audit Score** | 82/84 (98%) | 84/84 (100%) | Raw +2 |
+| **Audit Score** | 84/84 (100%) | 84/84 (100%) | Tie |
 | **Total Time** | 559s (9.3 min) | 1,360s (22.7 min) | FCP 2.4x faster |
 | **Total Cost** | $3.37 | $4.11 | FCP 18% cheaper |
 | **Output Tokens** | 29,065 | 101,909 | FCP 3.5x fewer |
@@ -194,7 +194,7 @@ Despite 2.5x more tool calls (82 vs 33), FCP is 18% cheaper because output token
 
 **Phase 3 (Polish):** Raw wins 149s vs 218s. Simple one-liner tasks (hyperlinks, footers, data bars) map directly to openpyxl properties. A 114-line script handles all 6 polish items cleanly.
 
-**Correctness:** Raw scores 84/84 (100%) vs FCP's 82/84 (98%). The 2-point gap is a concrete feature gap (print title rows), not a conceptual limitation. See [Correctness Audit](#correctness-audit) below.
+**Correctness:** Both achieve 84/84 (100%). The original v2 audit showed FCP at 82/84 due to missing `print-title-rows` — fixed in v0.1.9.
 
 **Reusable artifacts:** Raw produces version-controllable Python scripts (1,160 lines total). FCP's operations are conversational and ephemeral.
 
@@ -264,10 +264,10 @@ The [audit script](audit.py) runs 84 checks across all 3 phases, covering:
 
 | | FCP | Raw |
 |---|---|---|
-| **Score** | 82/84 (98%) | 84/84 (100%) |
-| **Failures** | Print titles on Portfolio Detail, Print titles on Cash Flows | None |
+| **Score** | 84/84 (100%) | 84/84 (100%) |
+| **Failures** | None | None |
 
-FCP's 2 failures are both print title rows — a `page-setup` feature gap in fcp-sheets, not a conceptual limitation. The `page-setup` verb doesn't currently expose the `print-title-rows` parameter. All other 82 checks pass, including every Phase 1 and Phase 2 check.
+Both implementations achieve a perfect score. The original v2 audit showed FCP at 82/84 due to missing `print-title-rows` support — this was fixed in v0.1.9 by adding `print-title-rows` and `print-title-cols` parameters to the `page-setup` verb.
 
 ---
 
