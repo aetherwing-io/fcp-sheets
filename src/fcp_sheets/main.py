@@ -31,6 +31,7 @@ mcp = create_fcp_server(
     verbs=VERBS,
     extra_sections=EXTRA_SECTIONS,
     is_positional=_is_sheets_positional,
+    extensions=["xlsx", "xls", "ods", "csv"],
     name="sheets-fcp",
     instructions="Spreadsheet File Context Protocol. Call sheets_help for the reference card.",
 )
