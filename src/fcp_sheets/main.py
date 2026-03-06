@@ -32,8 +32,8 @@ mcp = create_fcp_server(
     extra_sections=EXTRA_SECTIONS,
     is_positional=_is_sheets_positional,
     extensions=["xlsx", "xls", "ods", "csv"],
-    name="sheets-fcp",
-    instructions="Spreadsheet File Context Protocol. Call sheets_help for the reference card.",
+    name="fcp-sheets",
+    instructions="FCP Sheets server for creating and editing spreadsheet files (xlsx, csv, ods). Use sheets_session to create a new workbook or open an existing file, sheets to add data, formulas, formatting, and charts, sheets_query to inspect cells, ranges, and sheet structure, and sheets_help for the full verb reference. Start every interaction with sheets_session.",
 )
 
 
