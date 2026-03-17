@@ -6,6 +6,6 @@
   "author": {
     "name": "Scott Meyer"
   },
-  "repository": "https://github.com/aetherwing-io/fcp-sheets",
+  "repository": "https://github.com/os-tack/fcp-sheets",
   "keywords": ["spreadsheet", "excel", "xlsx", "mcp"]
 }

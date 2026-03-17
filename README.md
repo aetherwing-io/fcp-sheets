@@ -10,7 +10,7 @@ MCP server for semantic spreadsheet operations.
 
 ## What It Does
 
-fcp-sheets lets LLMs create and edit Excel workbooks by describing spreadsheet intent -- data entry, formulas, styling, charts, conditional formatting -- and renders it into standard `.xlsx` files. Instead of writing openpyxl code cell-by-cell, the LLM works with operations like `data A5` block entry, `style A1:F1 bold fill:#1a1a2e`, and `chart add stacked-column data:B3:C7`. Built on the [FCP](https://github.com/aetherwing-io/fcp) framework, powered by openpyxl for serialization.
+fcp-sheets lets LLMs create and edit Excel workbooks by describing spreadsheet intent -- data entry, formulas, styling, charts, conditional formatting -- and renders it into standard `.xlsx` files. Instead of writing openpyxl code cell-by-cell, the LLM works with operations like `data A5` block entry, `style A1:F1 bold fill:#1a1a2e`, and `chart add stacked-column data:B3:C7`. Built on the [FCP](https://github.com/os-tack/fcp) framework, powered by openpyxl for serialization.
 
 ## Quick Example
 
